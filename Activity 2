@@ -1,0 +1,22 @@
+//Pseudocode Conversion to Python
+def sortAndFindMedian(numbers):
+  sort(numbers)
+  n = len(numbers)
+  if n%2 == 0:
+    return ((numbers[(n // 2) - 1] + numbers[n // 2] ) // 2)
+  else:
+    return numbers[n // 2]
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//Bubble sorting algorithm
+def bubble_sort(numbers):
+    n = len(numbers)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if numbers[j] > numbers[j+1]:
+                numbers[j], numbers[j+1] = numbers[j+1], numbers[j]
+
+//Calling the bubblesort function
+array_of_numbers = [64, 34, 25, 12, 22, 11, 90]
+bubble_sort(array_of_numbers)
+print("Sorted Numbers:", array_of_numbers)
