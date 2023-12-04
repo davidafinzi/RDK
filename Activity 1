@@ -1,67 +1,94 @@
+//Open a command prompt or terminal on your computer and type the following
+pip install requests
 
 
+//The rest is Python
 import requests
 
 class WeatherApp:
-    def __init__(self, api_key):
-        self.api_key = api_key
+    def __init__(self):
+        self.api_key = "YOUR_OPENWEATHER_API_KEY"
         self.base_url = "http://api.openweathermap.org/data/2.5/weather"
-        self.favorite_cities = []
+        self.favourite_cities = []
 
-    def get_weather_details(self, city):
-        params = {"q": city, "appid": self.api_key}
+    def get_weather(self, city_name):
+        params = {"q": city_name, "appid": self.api_key, "units": "metric"}
         response = requests.get(self.base_url, params=params)
 
         if response.status_code == 200:
             weather_data = response.json()
             return weather_data
         else:
-            print("Error fetching weather details.")
+            print(f"Error: Unable to fetch weather details for {city_name}.")
             return None
 
-    def add_to_favorites(self, city):
-        if len(self.favorite_cities) < 3 and city not in self.favorite_cities:
-            self.favorite_cities.append(city)
-            print(f"{city} added to favorites.")
-        elif len(self.favorite_cities) == 3:
-            print("Cannot add more than 3 cities to favorites.")
+    def display_weather(self, weather_data):
+        if weather_data:
+            print("\nWeather Details:")
+            print(f"City: {weather_data['name']}")
+            print(f"Temperature: {weather_data['main']['temp']}°C")
+            print(f"Description: {weather_data['weather'][0]['description']}")
         else:
-            print(f"{city} is already in favorites.")
+            print("Weather details not available.")
 
-    def list_favorite_cities(self):
-        if not self.favorite_cities:
-            print("No favorite cities.")
+    def add_to_favourites(self, city_name):
+        if len(self.favourite_cities) < 3 and city_name not in self.favourite_cities:
+            self.favourite_cities.append(city_name)
+            print(f"{city_name} added to favourites.")
+        elif city_name in self.favourite_cities:
+            print(f"{city_name} is already in favourites.")
         else:
-            print("Favorite Cities:")
-            for city in self.favorite_cities:
-                weather_data = self.get_weather_details(city)
-                if weather_data:
-                    print(f"{city}: {weather_data['weather'][0]['description']}")
+            print("Favourites list is full. Remove a city before adding a new one.")
 
-    def update_favorites(self, remove_city, add_city):
-        if remove_city in self.favorite_cities:
-            self.favorite_cities.remove(remove_city)
-            print(f"{remove_city} removed from favorites.")
+    def list_favourite_cities(self):
+        print("\nFavourite Cities:")
+        if self.favourite_cities:
+            for city in self.favourite_cities:
+                weather_data = self.get_weather(city)
+                self.display_weather(weather_data)
         else:
-            print(f"{remove_city} is not in favorites.")
+            print("No favourite cities added.")
 
-        self.add_to_favorites(add_city)
+    def update_favourite_cities(self, remove_city, add_city):
+        if remove_city in self.favourite_cities:
+            self.favourite_cities.remove(remove_city)
+            print(f"{remove_city} removed from favourites.")
 
-# Replace 'YOUR_OPENWEATHER_API_KEY' with your actual OpenWeather API key
-api_key = 'YOUR_OPENWEATHER_API_KEY'
-weather_app = WeatherApp(api_key)
+            if len(self.favourite_cities) < 3:
+                self.add_to_favourites(add_city)
+            else:
+                print("Favourites list is full. Remove a city before adding a new one.")
+        else:
+            print(f"{remove_city} is not in favourites.")
 
-# Example usage:
-city_to_search = input("Enter a city name: ")
-weather_data = weather_app.get_weather_details(city_to_search)
+if __name__ == "__main__":
+    weather_app = WeatherApp()
 
-if weather_data:
-    print(f"Current weather in {city_to_search}: {weather_data['weather'][0]['description']}")
+    while True:
+        print("\nWeather Application Menu:")
+        print("1. Search for Weather Details of a City")
+        print("2. Add a City to Favourites")
+        print("3. List Favourite Cities")
+        print("4. Update Favourite Cities")
+        print("5. Exit")
 
-weather_app.add_to_favorites("London")
-weather_app.add_to_favorites("New York")
-weather_app.add_to_favorites("Tokyo")
-weather_app.list_favorite_cities()
+        choice = input("Enter your choice (1-5): ")
 
-weather_app.update_favorites("London", "Paris")
-weather_app.list_favorite_cities()
+        if choice == "1":
+            city_name = input("Enter the name of the city: ")
+            weather_data = weather_app.get_weather(city_name)
+            weather_app.display_weather(weather_data)
+        elif choice == "2":
+            city_name = input("Enter the name of the city to add to favourites: ")
+            weather_app.add_to_favourites(city_name)
+        elif choice == "3":
+            weather_app.list_favourite_cities()
+        elif choice == "4":
+            remove_city = input("Enter the name of the city to remove from favourites: ")
+            add_city = input("Enter the name of the city to add to favourites: ")
+            weather_app.update_favourite_cities(remove_city, add_city)
+        elif choice == "5":
+            print("Exiting the Weather Application. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 5.")
