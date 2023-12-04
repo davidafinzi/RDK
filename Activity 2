@@ -17,6 +17,7 @@ def bubble_sort(numbers):
                 numbers[j], numbers[j+1] = numbers[j+1], numbers[j]
 
 //Calling the bubblesort function
-array_of_numbers = [64, 34, 25, 12, 22, 11, 90]
-bubble_sort(array_of_numbers)
-print("Sorted Numbers:", array_of_numbers)
+input_array_of_numbers = input_str = input("Enter a list of numbers: ")
+str_numbers = [int(num) for num in input_array_of_numbers.split()]
+bubble_sort(str_numbers)
+print("Sorted Numbers:", input_array_of_numbers)
